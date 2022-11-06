@@ -7,12 +7,20 @@ const Bid = sequelize.define('bids', {
         primaryKey: true
     },
     user: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUIDV1,
+        references: {
+            model: 'User',
+            key: 'id'
+        },
         allowNull: false,
         unique: true
     },
     product: {
-        type: DataTypes.STRING(64),
+        type: DataTypes.UUID,
+        references: {
+            model: 'Product',
+            key: 'id'
+        },
         allowNull: false
     },
     bidPrice: {

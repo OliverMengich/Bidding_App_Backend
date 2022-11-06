@@ -1,10 +1,11 @@
 const sequelize = require('../database/db');
 const { DataTypes } = require('sequelize');
-const User = sequelize.define('Users', {
+const Users = sequelize.define('Users', {
     id: {
-        type: DataTypes.UUIDV1,
+        type: DataTypes.UUIDV4,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4
     },
     email: {
         type: DataTypes.STRING,
@@ -15,13 +16,8 @@ const User = sequelize.define('Users', {
         type: DataTypes.STRING(64),
         allowNull: false
     },
-    address: {
+    name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    nonce: {
-        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true
     },
@@ -29,4 +25,4 @@ const User = sequelize.define('Users', {
     timestamps: true
 });
 
-module.exports = User;
+module.exports = Users;

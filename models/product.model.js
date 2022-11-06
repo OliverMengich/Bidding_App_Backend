@@ -4,7 +4,8 @@ const Product = sequelize.define('Products', {
     id: {
         type: DataTypes.UUIDV4,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4
     },
     title: {
         type: DataTypes.STRING,
@@ -21,8 +22,12 @@ const Product = sequelize.define('Products', {
         unique: true
     },
     creator: {
-        type: DataTypes.UUIDV1,
+        type: DataTypes.UUIDV4, // should be a user,
         allowNull: false,
+        references: {
+            model: "Users",
+            key: "id"
+        }
     },
     regularPrice: {
         type: DataTypes.FLOAT,

@@ -58,6 +58,7 @@ module.exports = buildSchema(`
     input ProductInputData {
         title: String!
         category: String!
+        creator: ID!
         imageUrl: String!
         regularPrice: Float!
         auctionPrice: Float!
@@ -67,9 +68,6 @@ module.exports = buildSchema(`
     }
     type RootQuery {
         login(email: String!, password: String!): AuthData!
-        posts: [Post!]!
-        post(id: ID!): Post!
-        user: User!
     }
     type RootMutation {
         createUser(userInput: UserInputData): User!

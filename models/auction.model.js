@@ -10,12 +10,16 @@ const Auction = sequelize.define('Auctions', {
         primaryKey: true
     },
     product: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUIDV4,
         allowNull: false,
         unique: true
     },
     bids: {
         type: DataTypes.ARRAY,
+        references: {
+            model: 'Bid',
+            key: 'id'
+        },
         allowNull: false
     },
     auctionStatus: {
@@ -24,7 +28,11 @@ const Auction = sequelize.define('Auctions', {
     },
     creator: {
         type: DataTypes.UUIDV1,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: 'User',
+            key: 'id'
+        }
     },
     auctionWinner: {
         type: DataTypes.UUIDV1,
