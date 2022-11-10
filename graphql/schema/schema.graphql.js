@@ -4,14 +4,14 @@ module.exports = buildSchema(`
         id: ID!
         name: String!
         email: String!
-        password: String!
+        password: String
     }
     type Product {
         id: ID!
         title: String!
         category: String!
         imageUrl: String!
-        creator: User!
+        creator: User
         regularPrice: Float!
         auctionPrice: Float!
         auctionStatus: Boolean!
@@ -45,6 +45,13 @@ module.exports = buildSchema(`
         createdAt: String!
         updatedAt: String!
     }
+    input AuctionInput {
+        productID: ID!
+        auctionStatus: Boolean!
+        auctionStartTime: String!
+        auctionEndTime: String!
+        auctionStartPrice: Float!
+    }
     type AuthData {
         userId: ID!
         token: String!
@@ -68,12 +75,20 @@ module.exports = buildSchema(`
     }
     type RootQuery {
         login(email: String!, password: String!): AuthData!
+        products: [Product!]
+        product(id: ID!): Product!
+        auctions: [Auction!]!
+        auction(id: ID!): Auction!
+        bids: [Bid!]!
+        bid(id: ID!): Bid!
+        
     }
     type RootMutation {
         createUser(userInput: UserInputData): User!
         createProduct(productInput: ProductInputData): Product!
         updateProduct(id: ID!, productInput: ProductInputData): Product!
         deleteProduct(id: ID!): Boolean!
+        createAuction(auctionInput: AuctionInput): Auction
     }
     schema {
         query: RootQuery

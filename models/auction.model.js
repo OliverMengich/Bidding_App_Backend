@@ -12,10 +12,13 @@ const Auction = sequelize.define('Auctions', {
     product: {
         type: DataTypes.UUIDV4,
         allowNull: false,
-        unique: true
+        references: {
+            model: 'Product',
+            key: 'id'
+        },
     },
     bids: {
-        type: DataTypes.ARRAY,
+        type: DataTypes.ARRAY(DataTypes.UUIDV4),
         references: {
             model: 'Bid',
             key: 'id'
@@ -31,7 +34,7 @@ const Auction = sequelize.define('Auctions', {
         allowNull: false,
         references: {
             model: 'User',
-            key: 'id'
+            key: 'id',
         }
     },
     auctionWinner: {
@@ -72,21 +75,21 @@ const Auction = sequelize.define('Auctions', {
     timestamps: true
 });
 //One to one relation between Auction and Product
-Auction.hasOne(Product,{
-    foreignKey:{
-        name: 'product',
-        allowNull: false
-    }
-});
-Product.belongsTo(Auction);
-//One to many relation with Auction and Bids
-Auction.hasMany(Bid,{
-    foreignKey: {
-        name:'bids',
-        allowNull: false
-    }
-});
-Bid.belongsTo(Auction);
+// Auction.hasOne(Product,{
+//     foreignKey:{
+//         name: 'product',
+//         allowNull: false
+//     }
+// });
+// Product.belongsTo(Auction);
+// //One to many relation with Auction and Bids
+// Auction.hasMany(Bid,{
+//     foreignKey: {
+//         name:'bids',
+//         allowNull: false
+//     }
+// });
+// Bid.belongsTo(Auction);
 
 // One to many relation between User and Auctions
 //A user can have many auctions. But an A

@@ -12,6 +12,10 @@ const Product = sequelize.define('Products', {
         allowNull: false,
         unique: true
     },
+    price: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+    },
     category: {
         type: DataTypes.STRING(64),
         allowNull: false

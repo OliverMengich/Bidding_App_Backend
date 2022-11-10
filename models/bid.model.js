@@ -1,6 +1,6 @@
 const sequelize = require('../database/db');
 const { DataTypes } = require('sequelize');
-const Bid = sequelize.define('bids', {
+const Bid = sequelize.define('Bids', {
     id: {
         type: DataTypes.UUIDV4,
         allowNull: false,
