@@ -59,7 +59,7 @@ module.exports = {
         return product
         .destroy()
         .then(() => {
-        return true
+            return true
         })
         .catch(err => {
             console.log(err);
