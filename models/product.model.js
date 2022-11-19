@@ -25,34 +25,7 @@ const Product = sequelize.define('Products', {
         allowNull: false,
         unique: true
     },
-    creator: {
-        type: DataTypes.UUIDV4, // should be a user,
-        allowNull: false,
-        references: {
-            model: "Users",
-            key: "id"
-        }
-    },
-    regularPrice: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-    },
-    auctionPrice: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-    },
-    auctionStatus: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-    auctionStartTime: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    auctionEndTime: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    
 },{
     timestamps: true
 }

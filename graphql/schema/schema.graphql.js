@@ -12,22 +12,25 @@ module.exports = buildSchema(`
         category: String!
         imageUrl: String!
         creator: User
-        regularPrice: Float!
-        auctionPrice: Float!
-        auctionStatus: Boolean!
-        auctionStartTime: String!
-        auctionEndTime: String!
+        price: Float!
         createdAt: String!
         updatedAt: String!
     }
     type Bid {
         id: ID!
         user: User!
+        auction: [Auction]
         product: Product!
         bidPrice: Float!
         bidTime: String!
         createdAt: String!
         updatedAt: String
+    }
+    input BidInput{
+        user: ID!,
+        product: ID!,
+        price: Float!
+        bidTime: String
     }
     type Auction {
         id: ID!
@@ -57,6 +60,7 @@ module.exports = buildSchema(`
         token: String!
         tokenExpiration: Int!
     }
+    
     input UserInputData {
         email: String!
         name: String!
@@ -65,14 +69,14 @@ module.exports = buildSchema(`
     input ProductInputData {
         title: String!
         category: String!
-        creator: ID!
+        UserId: ID!
         imageUrl: String!
-        regularPrice: Float!
-        auctionPrice: Float!
-        auctionStatus: Boolean!
-        auctionStartTime: String!
-        auctionEndTime: String!
+        price: Float!
+        #auctionStatus: Boolean!
+        #auctionStartTime: String!
+        #auctionEndTime: String!
     }
+    
     type RootQuery {
         login(email: String!, password: String!): AuthData!
         products: [Product!]
@@ -81,14 +85,13 @@ module.exports = buildSchema(`
         auction(id: ID!): Auction!
         bids: [Bid!]!
         bid(id: ID!): Bid!
-        
     }
     type RootMutation {
         createUser(userInput: UserInputData): User!
         createProduct(productInput: ProductInputData): Product!
         updateProduct(id: ID!, productInput: ProductInputData): Product!
         deleteProduct(id: ID!): Boolean!
-        createAuction(auctionInput: AuctionInput): Auction
+        createAuction(auctionInput: AuctionInput): Auction!
     }
     schema {
         query: RootQuery

@@ -4,7 +4,31 @@ const Auction = require('../../models/auction.model.js');
 const uuid = require('uuid');
 const bcryptjs = require('bcryptjs');
 const Bid = require('../../models/bid.model.js');
-
+const actionCreate = (Model, params, callback) => {
+    return Model.create({
+        ...params
+    }).then(res => {
+        return res.toJSON()
+    }).then(data => {
+        return callback(undefined, {
+            ...data
+        })
+    }).catch(err => {
+        callback(err,undefined)
+    })
+}
+const transformParam = async (Model, id,callback) => {
+    return Model.findByPk(id)
+        .then(res => {
+            return res.toJSON()
+        }).then(data => {
+            return callback(undefined, {
+                ...data,
+            })
+        }).catch(err => {
+            return callback(err,undefined)
+        })
+}
 module.exports = {
     login: ({ }) => {
         return {
@@ -20,25 +44,35 @@ module.exports = {
             throw new Error("Users exists");
         }
         const hashedPassword = await bcryptjs.hash(userInput.password, 12);
-        const user = await Users.create({
-            id: uuid.v4(),
-            ...userInput,
-            password: hashedPassword
-        });
-        // console.log(user);
-        return user;
+        const data = await actionCreate(Users, { id: uuid.v4(), ...userInput, password: hashedPassword }, (err, response) => {
+            if (err) {
+                return err;
+            }
+            return {
+                ...response,
+                password: null,
+            }
+        })
+        return data;
     },
     createProduct: async ({ productInput }) => {
-        const productExists = await Product.findOne({ imageUrl: productInput.imageUrl })
-        if (productExists) {
-            throw new Error("Product exits");
-        }
-        const product = await Product.create({
-            ...productInput,
-            UserId: productInput.creator
-        });
-        console.log(product);
-        return product;
+       
+        // you need to verify if the current user is confirming to add the same product 
+        const data = await actionCreate(Product, { ...productInput }, (err, response) => {
+            if (err) {
+                return err;
+            }
+            return {
+                ...response,
+                creator: transformParam(Users, response.UserId, (err, res) => { 
+                    if (err) {
+                        return err
+                    }
+                    return res;
+                })
+            }
+        })
+        return data;
     },
     updateProduct: async ({ id, productInput }) => { 
         const product = await Product.findByPk(id);
@@ -73,20 +107,12 @@ module.exports = {
                 prod = prod.toJSON();
                 return {
                     ...prod,
-                    creator: () => {
-                        return Users.findByPk(prod.UserId)
-                        .then(user=>{return user.toJSON()})
-                        .then(user => {
-                            console.log(user);
-                            return {
-                                ...user,
-                                password: null
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    }
+                    creator: transformParam(Users,prod.UserId,(err, res) => { 
+                        if (err) {
+                            return err
+                        }
+                        return res;
+                    }),
                 }
             })
         } catch (error) {
@@ -102,29 +128,21 @@ module.exports = {
         product = product.toJSON();
         return {
             ...product,
-            creator: () => {
-                return Users.findByPk(product.UserId)
-                .then(result => { return result.toJSON() })
-                .then(user => {
-                    console.log(typeof user);
-                    return {
-                        ...user,
-                        password: null
-                    };
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            }
+            creator: transformParam(Users,product.UserId,(err, res) => { 
+                if (err) {
+                    return err
+                }
+                return res;
+            })
         }
     },
-    createAuction: ({ auctionInput }) => {
+    createAuction:async ({ auctionInput }) => {
         // first find product. if no product throw error
         const product = Product.findByPk(auctionInput.productID);
         if (!product) {
             throw new Error("Product doesn't exist");
         }
-        const newAuction = Auction.create({
+        const newAuction = await actionCreate(Auction, {
             id: uuid.v4(),
             product: product.id,
             bids: [],
@@ -136,19 +154,51 @@ module.exports = {
             auctionIncrementTime: 0, // changes wth changes in time
             auctionStatus: false,
             ...auctionInput,
+        }, (err, res) => {
+            if (err) {
+                return err
+            }
+            return {
+                ...res,
+                product: transformParam(Product, productId, (err, res) => {
+                    if (err) {
+                        return err;
+                    }
+                    return res;
+                })
+            }
         });
+        console.log(newAuction);
         return newAuction;
+    },
+    updateAuction: async ({ id }) => {
+        // require that the user who made the auction is the one updating the auction
+        const auction = await Auction.findByPk(id);
+        if (!auction) {
+            throw new Error("Auction doesn't exist");
+        }
+        return auction;
     },
     auctions: async () => {
         const auctions = await Auction.findAll();
         return auctions.map(auction => {
-            return Product.findByPk(auction.productID)
-            .then(prod => { return prod.toJSON() })
-            .then(product => {
-                return {
-                ...product
-                }
-            })
+            return {
+                ...auction,
+                prod: transformParam(Product, auction.productID, (err, res) => {
+                    if (err) {
+                        return err;
+                    }
+                    return {
+                        ...res,
+                        creator: transformParam(Users, creator, (err, res) => {
+                            if (err) {
+                                return err;
+                            }
+                            return res;
+                        })
+                    };
+                }),
+            }
         })
     },
     auction: async ({ id }) => {
