@@ -25,6 +25,6 @@ describe("BID API tests",(done)=>{
                 res.body.data.should.have.property("products").with.length(3);
                 done();
             })
-        })
+        });
     })
 })

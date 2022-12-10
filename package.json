@@ -4,7 +4,7 @@
   "description": "Backend of Online bidding system",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "start": "nodemon index.js"
   },
   "keywords": [],
