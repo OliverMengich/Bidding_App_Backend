@@ -4,7 +4,6 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 describe("BID API tests",(done)=>{
-
     describe("Gets products in Database",(done)=>{
         it("it should GET Products",(done)=>{
             let requestBody = {
@@ -21,9 +20,9 @@ describe("BID API tests",(done)=>{
             .get("/graphql")
             .send(requestBody)
             .end((err,res)=>{
-                // console.log(res.body.data);
                 res.should.have.status(200);
                 res.body.data.should.have.property("products")
+                res.body.data.should.have.property("products").with.length(3);
                 done();
             })
         })
