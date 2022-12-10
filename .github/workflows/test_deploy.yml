@@ -10,4 +10,14 @@ jobs:
        run: npm ci
      - name: Run test
        run: npm run test
-       
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to render
+        uses: bounceapp/render-action@0.2.0
+        with:
+          email: ${{ secrets.RENDER_EMAIL }}
+          password: ${{ secrets.RENDER_PASSWORD }}
+          token: ${{ secrets.GITHUBTOKEN }}
+          service-id: ${{ secrets.RENDER_SERVICEID }}
