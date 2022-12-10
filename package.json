@@ -4,7 +4,7 @@
   "description": "Backend of Online bidding system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "nodemon index.js"
   },
   "keywords": [],
@@ -12,12 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-graphql": "^0.12.0",
     "graphql": "^15.8.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.11.2",
+    "mocha": "^10.1.0",
     "sequelize": "^6.25.3",
     "sqlite3": "^5.1.2",
     "uuid": "^9.0.0",
